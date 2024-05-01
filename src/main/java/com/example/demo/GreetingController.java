@@ -38,7 +38,7 @@ public class GreetingController {
         Iterable<Message> messages = messageRepo.findAll();
         model.addAttribute("messages", messages);
 
-        return "main";
+        return "redirect:/";
     }
 
     @PostMapping("filter")
