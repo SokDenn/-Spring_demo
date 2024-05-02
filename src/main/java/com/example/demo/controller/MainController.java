@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.controller;
 
 import com.example.demo.repos.MessageRepo;
 import com.example.demo.domain.Message;
@@ -9,28 +9,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Map;
-
 @Controller
-public class GreetingController {
+public class MainController {
     @Autowired
     private MessageRepo messageRepo;
-    @GetMapping("/greeting")
-    public String greeting(@RequestParam(name="name", required=false, defaultValue="World")
-                               String name, Model model) {
-        model.addAttribute("name", name);
+    @GetMapping("/")
+    public String greeting(Model model) {
         return "greeting";
     }
 
-    @GetMapping
+    @GetMapping("/main")
     public String main(Model model){
         Iterable<Message> messages = messageRepo.findAll();
         model.addAttribute("messages", messages);
         return "main";
     }
 
-    @PostMapping
+    @PostMapping("/main")
     public String add(Model model, @RequestParam String text, @RequestParam String tag){
         Message message = new Message(text, tag);
         messageRepo.save(message);
@@ -38,7 +33,7 @@ public class GreetingController {
         Iterable<Message> messages = messageRepo.findAll();
         model.addAttribute("messages", messages);
 
-        return "redirect:/";
+        return "redirect:/main";
     }
 
     @PostMapping("filter")
