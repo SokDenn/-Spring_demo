@@ -1,6 +1,6 @@
 package com.example.demo.config;
 
-import ch.qos.logback.core.subst.Node;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class WebSecurityConfig {
     @Autowired
-    private DataSource dataSource;
+    private UserService userService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -34,10 +34,8 @@ public class WebSecurityConfig {
     }
     @Autowired
     public void initialize(AuthenticationManagerBuilder builder, DataSource dataSource) throws Exception {
-        builder.jdbcAuthentication()
-                .dataSource(dataSource)
-                .passwordEncoder(NoOpPasswordEncoder.getInstance())
-                .usersByUsernameQuery("select username, password, active from usr where username = ?")
-                .authoritiesByUsernameQuery("select u.username, ur.roles from usr u inner join user_role ur on u.id = ur.user_id where u.username=?");
+        builder.userDetailsService(userService)
+                .passwordEncoder(NoOpPasswordEncoder.getInstance());
+
     }
 }
